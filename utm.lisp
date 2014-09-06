@@ -69,9 +69,9 @@
 				(+ 1.0 (- (expt (tan lat-rad) 2.0)) (* e-prime-squared (expt (cos lat-rad) 2.0)))))
 		 (easting (+ 500000.0 (* k4 p) (* k5 (expt p 3.0))))
 		 (northing (+ k1 (* k2 (expt p 2.0)) (* k3 (expt p 4.0)))))
-	(values easting
-			northing
-			zone)))
+	(list easting
+		  northing
+		  zone)))
 
 ;; Again, see the references for an explaination of what's going on
 ;; * http://www.uwgb.edu/dutchs/UsefulData/UTMFormulas.htm
@@ -111,5 +111,5 @@
 	   (q7 (/ (* (+ 5.0 (* -2.0 c1) (* 28.0 t1) (* -3 (expt c1 2.0)) (* 8.0 e-prime-squared) (* 24.0 (expt t1 2.0))) (expt d 5.0)) 120.0))
 	   (lat (- fp (* q1 (+ q2 (- q3) q4))))
 	   (lon (+ long0 (/ (+ q5 (- q6) q7) (cos fp)))))
-	(values (rad2deg lat) (rad2deg lon))))
+	(list (rad2deg lat) (rad2deg lon))))
 
