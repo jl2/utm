@@ -10,6 +10,7 @@
 
 ;; Fills the ellipsoids hash table
 (defun fill-ellipsoids ()
+  "Fill the hash table of supported ellipsoids."
   (setf (gethash "NAD83" *ellipsoids*) (cons 6378137 6356752.3142))
   (setf (gethash "WGS84" *ellipsoids*) (cons 6378137 6356752.3142))
   (setf (gethash "GRS80" *ellipsoids*) (cons 6378137 6356752.3141))
@@ -27,8 +28,8 @@
 ;; Populate the hash table
 (fill-ellipsoids)
 
-;; Retrieve the names of the hash table ellipsoids
 (defun ellipsoid-names ()
+  "Return the names of all supported ellipsoids."
   (loop for key being the hash-keys in *ellipsoids* collect key))
 
 ;; Constants used in the equations
@@ -42,6 +43,7 @@
 ;; * http://www.uwgb.edu/dutchs/UsefulData/UTMFormulas.htm
 ;; * http://www.uwgb.edu/dutchs/FieldMethods/UTMSystem.htm
 (defun lat-lon-to-utm (lat lon &key (ellipsoid "WGS84"))
+  "Convert a point given as latitude and longitude into UTM using the specified ellipsoid.  The default ellipsoid is WGS84."
   (let* ((lat-rad (deg2rad lat))
 		 (lon-rad (deg2rad lon))
 		 (a (car (gethash ellipsoid *ellipsoids*)))
@@ -69,14 +71,15 @@
 				(+ 1.0 (- (expt (tan lat-rad) 2.0)) (* e-prime-squared (expt (cos lat-rad) 2.0)))))
 		 (easting (+ 500000.0 (* k4 p) (* k5 (expt p 3.0))))
 		 (northing (+ k1 (* k2 (expt p 2.0)) (* k3 (expt p 4.0)))))
-	(list easting
-		  northing
+	(list (realpart easting)
+		  (realpart northing)
 		  zone)))
 
 ;; Again, see the references for an explaination of what's going on
 ;; * http://www.uwgb.edu/dutchs/UsefulData/UTMFormulas.htm
 ;; * http://www.uwgb.edu/dutchs/FieldMethods/UTMSystem.htm
 (defun utm-to-lat-lon (easting northing zone &key (ellipsoid "WGS84"))
+  "Convert a point given as UTM into latitude and longitude using the specified ellipsoid.  The default ellipsoid is WGS84."
   (let*
 	  ((reasting (- easting 500000.0))
 	   (a (car (gethash ellipsoid *ellipsoids*)))
@@ -111,5 +114,5 @@
 	   (q7 (/ (* (+ 5.0 (* -2.0 c1) (* 28.0 t1) (* -3 (expt c1 2.0)) (* 8.0 e-prime-squared) (* 24.0 (expt t1 2.0))) (expt d 5.0)) 120.0))
 	   (lat (- fp (* q1 (+ q2 (- q3) q4))))
 	   (lon (+ long0 (/ (+ q5 (- q6) q7) (cos fp)))))
-	(list (rad2deg lat) (rad2deg lon))))
+	(list (rad2deg (realpart lat)) (rad2deg (realpart lon)))))
 
