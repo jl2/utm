@@ -2,8 +2,8 @@
 
 (in-package #:utm)
 
-(defun deg2rad (d) `(* ,d (/ PI 180.0)))
-(defun rad2deg (r) `(* ,r (/ 180.0 pi)))
+(defun deg2rad (d) (* d (/ PI 180.0)))
+(defun rad2deg (r) (* r (/ 180.0 pi)))
 
 ;; This hash tables stores parameters about the ellipsoid each model uses to model the earth
 (defparameter *ellipsoids* (make-hash-table :test 'equal))
