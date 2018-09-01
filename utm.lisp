@@ -101,7 +101,7 @@
           (if (< lat 0 ) (+ N0 (realpart northing)) (realpart northing))
           nzone)))
 
-;; Again, see the references for an explaination of what's going on
+;; Again, see the references for an explanation of what's going on
 ;; * http://www.uwgb.edu/dutchs/UsefulData/UTMFormulas.htm
 ;; * http://www.uwgb.edu/dutchs/FieldMethods/UTMSystem.htm
 (defun utm-to-lat-lon (easting northing zone &key (ellipsoid "WGS84"))
@@ -148,3 +148,17 @@
                   
     (list (rad2deg (realpart lat)) (rad2deg (realpart lon)))))
 
+(defun deg-min-sec-to-decimal (degree minute second)
+  "Convert degree, minute, second format to decimal."
+  (declare (optimize (speed 3)))
+  (+ degree (/ minute 60.0) (/ second (* 60.0 60.0))))
+
+(defun decimal-to-deg-min-sec (decimal)
+  "Convert degree, minute, second format to decimal."
+  (declare (optimize (speed 3)))
+  (multiple-value-bind (degrees min-secs) (truncate decimal)
+    (when (< 0 degrees)
+      (setf min-secs (- min-secs))
+      (decf degrees))
+    (multiple-value-bind (minutes secs) (truncate (- min-secs))
+      (values degrees minutes (* secs 60.0)))))
