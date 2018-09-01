@@ -1,4 +1,4 @@
-;;;; package.lisp
+;;;; utm.test.asd
 ;;
 ;; Copyright (c) 2018 Jeremiah LaRocco <jeremiah_larocco@fastmail.com>
 
@@ -14,10 +14,20 @@
 ;; ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 ;; OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-(defpackage #:utm
-  (:use #:cl)
-  (:export #:lat-lon-to-utm
-		   #:utm-to-lat-lon
-		   #:ellipsoid-names
-		   ))
+(in-package :cl-user)
+(defpackage utm.test-asd
+  (:use :cl :asdf))
+(in-package :utm.test-asd)
 
+
+(defsystem utm.test
+  :author "Jeremiah LaRocco"
+  :mailto "jeremiah_larocco@fastmail.com"
+  :description "Test utm."
+  :license "ISC"
+  :depends-on (:utm
+               :fiveam)
+  :components ((:module "t"
+                :components
+                ((:file "package"))))
+  :perform (test-op :after (op c) (eval (read-from-string "(every #'fiveam::TEST-PASSED-P (5am:run :utm))"))))
