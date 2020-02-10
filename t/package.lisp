@@ -107,3 +107,17 @@
         (is-true (utm-near translated-longitude longitude)
                  "Could not convert ~a to latitude/longitude... got longitude ~a"
                  coord translated-longitude)))))
+
+(test decimal-deg-min-sec
+  ;; TODO: Add some more test cases...
+  (is-true (utm-near (deg-min-sec-to-decimal 20 30 40) 20.51111))
+  (multiple-value-bind (deg min sec) (utm:decimal-to-deg-min-sec 20.5111119)
+     (is-true (utm-near deg 20.0))
+     (is-true (utm-near min 30.0))
+     (is-true (utm-near sec 40.003967)))
+  (is-true (utm-near (deg-min-sec-to-decimal  78 39 10.8) 78.653))
+  (multiple-value-bind (deg min sec) (utm:decimal-to-deg-min-sec 78.653)
+     (is-true (utm-near deg 78.0))
+     (is-true (utm-near min 39.0))
+     (is-true (utm-near sec 10.8)))
+  )

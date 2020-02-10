@@ -145,7 +145,6 @@
        (lon (+ long0 (/ (+ q5 (- q6) q7) (cos fp)))))
     (declare (type double-float reasting a b f e-squared e-prime-squared long0 M mu
                    e1 j1 j2 j3 j4 fp c1 t1 r1 n1 D q1 q2 q3 q4 q5 q6 q7 lat lon))
-                  
     (list (rad2deg (realpart lat)) (rad2deg (realpart lon)))))
 
 (defun deg-min-sec-to-decimal (degree minute second)
@@ -157,8 +156,9 @@
   "Convert degree, minute, second format to decimal."
   (declare (optimize (speed 3)))
   (multiple-value-bind (degrees min-secs) (truncate decimal)
-    (when (< 0 degrees)
+    (when (< degrees 0)
       (setf min-secs (- min-secs))
       (decf degrees))
-    (multiple-value-bind (minutes secs) (truncate (- min-secs))
+    (multiple-value-bind (minutes secs) (truncate (* 60 min-secs))
       (values degrees minutes (* secs 60.0d0)))))
+
