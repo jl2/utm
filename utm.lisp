@@ -64,8 +64,8 @@
 ;; * http://www.uwgb.edu/dutchs/FieldMethods/UTMSystem.htm
 (defun lat-lon-to-utm (lat lon &key (ellipsoid "WGS84") (zone nil))
   "Convert a point given as latitude and longitude into UTM using the specified ellipsoid.  The default ellipsoid is WGS84."
-  (declare (optimize (speed 3) (space 0) (safety 0) (debug 1)))
-  (declare (type double-float lat lon)
+  (declare (optimize (speed 3) (space 0) (safety 0) (debug 3))
+           (type double-float lat lon)
            (type (or null fixnum) zone))
   (let* ((lat-rad (deg2rad lat))
          (lon-rad (deg2rad lon))
@@ -106,8 +106,8 @@
 ;; * http://www.uwgb.edu/dutchs/FieldMethods/UTMSystem.htm
 (defun utm-to-lat-lon (easting northing zone &key (ellipsoid "WGS84"))
   "Convert a point given as UTM into latitude and longitude using the specified ellipsoid.  The default ellipsoid is WGS84."
-  (declare (optimize (speed 3) (space 0) (safety 0) (debug 3)))
-  (declare (type double-float easting northing)
+  (declare (optimize (speed 3))
+           (type double-float easting northing)
            (type fixnum zone))
   (let*
       ((reasting (- easting 500000.0d0))
@@ -154,11 +154,11 @@
 
 (defun decimal-to-deg-min-sec (decimal)
   "Convert degree, minute, second format to decimal."
-  (declare (optimize (speed 3)))
+  (declare (optimize (speed 3))
+           (type double-float decimal))
   (multiple-value-bind (degrees min-secs) (truncate decimal)
     (when (< degrees 0)
       (setf min-secs (- min-secs))
       (decf degrees))
     (multiple-value-bind (minutes secs) (truncate (* 60 min-secs))
       (values degrees minutes (* secs 60.0d0)))))
-
