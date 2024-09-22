@@ -83,10 +83,8 @@
 (test lat-lon-to-utm
   (dolist (coord *test-coords*)
     (with-slots (latitude longitude ellipsoid zone easting northing) coord
-      (let* ((translated (lat-lon-to-utm latitude longitude :ellipsoid ellipsoid))
-             (translated-easting (car translated))
-             (translated-northing (cadr translated))
-             (translated-zone (caddr translated)))
+      (multiple-value-bind (translated-easting translated-northing translated-zone)
+          (lat-lon-to-utm latitude longitude :ellipsoid ellipsoid)
         (is-true (utm-near translated-easting easting)
                  "Could not convert ~a to UTM got easting ~a" coord translated-easting)
         (is-true (utm-near translated-northing northing)
@@ -98,9 +96,8 @@
 (test utm-to-lat-lon
   (dolist (coord *test-coords*)
     (with-slots (latitude longitude ellipsoid zone easting northing) coord
-      (let* ((translated (utm-to-lat-lon easting northing zone :ellipsoid ellipsoid))
-             (translated-latitude (car translated))
-             (translated-longitude (cadr translated)))
+      (multiple-value-bind (translated-latitude translated-longitude)
+          (utm-to-lat-lon easting northing zone :ellipsoid ellipsoid)
         (is-true (utm-near translated-latitude latitude)
                  "Could not convert ~a to latitude/longitude... got latitude ~a"
                  coord translated-latitude)
