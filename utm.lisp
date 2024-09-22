@@ -1,6 +1,5 @@
-;;;; utm.lisp
-;;
-;; Copyright (c) 2018 Jeremiah LaRocco <jeremiah_larocco@fastmail.com>
+;; utm.lisp
+;; Copyright (c) 2024 Jeremiah LaRocco <jeremiah_larocco@fastmail.com>
 
 ;; Permission to use, copy, modify, and/or distribute this software for any
 ;; purpose with or without fee is hereby granted, provided that the above
@@ -17,6 +16,8 @@
 (in-package #:utm)
 
 (declaim (inline deg2rad rad2deg))
+(declaim (ftype (function (double-float) double-float)
+                deg2rad rad2deg))
 (defun deg2rad (d)
   (declare (type double-float d))
   (* d (/ PI 180.0d0)))
