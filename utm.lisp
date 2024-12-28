@@ -16,14 +16,14 @@
 (in-package #:utm)
 
 (declaim (inline deg2rad rad2deg))
-(declaim (ftype (function (double-float) double-float)
+(declaim (ftype (function (number) number)
                 deg2rad rad2deg))
 (defun deg2rad (d)
-  (declare (type double-float d))
+  (declare (type number d))
   (* d (/ PI 180.0d0)))
 
 (defun rad2deg (r)
-  (declare (type double-float r))
+  (declare (type number r))
   (* r (/ 180.0d0 pi)))
 
 ;; This hash tables stores parameters about the ellipsoid each model uses to model the earth
@@ -51,7 +51,10 @@
 
 (defun ellipsoid-names ()
   "Return the names of all supported ellipsoids."
-  (loop :for key :being :the :hash-keys :in *ellipsoids* :collect key))
+  (loop :for key :being
+          :the :hash-keys
+            :in *ellipsoids*
+        :collect key))
 
 ;; Constants used in the equations
 (defconstant E0 500000.0d0)
@@ -63,12 +66,15 @@
 ;; If curious, look at:
 ;; * http://www.uwgb.edu/dutchs/UsefulData/UTMFormulas.htm
 ;; * http://www.uwgb.edu/dutchs/FieldMethods/UTMSystem.htm
-(declaim (ftype (function (double-float double-float &key) (values double-float double-float fixnum))
+(declaim (ftype (function (number number
+                                        &key
+                                        (:ellipsoid string)
+                                        (:zone (or null fixnum)))
+                          (values number number fixnum))
                 lat-lon-to-utm))
 (defun lat-lon-to-utm (lat lon &key (ellipsoid "WGS84") (zone nil))
   "Convert a point given as latitude and longitude into UTM using the specified ellipsoid.  The default ellipsoid is WGS84."
-  (declare (optimize (speed 3) (debug 0) (safety 0) (space 2))
-           (type double-float lat lon)
+  (declare (type number lat lon)
            (type (or null fixnum) zone))
   (let* ((lat-rad (deg2rad lat))
          (lon-rad (deg2rad lon))
@@ -187,7 +193,7 @@
                                    (expt p 2.0d0))
                                 (* k3
                                    (expt p 4.0d0))))))
-    (declare (type double-float
+    (declare (type number
                    lat-rad lon-rad
                    a b
                    f e-squared e-prime-squared
@@ -206,8 +212,8 @@
 ;; * http://www.uwgb.edu/dutchs/FieldMethods/UTMSystem.htm
 (defun utm-to-lat-lon (easting northing zone &key (ellipsoid "WGS84"))
   "Convert a point given as UTM into latitude and longitude using the specified ellipsoid.  The default ellipsoid is WGS84."
-  (declare (optimize (speed 3) (debug 0) (safety 0) (space 0))
-           (type double-float easting northing)
+  (declare
+           (type number easting northing)
            (type fixnum zone)
            )
   (let*
@@ -329,28 +335,28 @@
                      (- q6)
                      q7)
                   (cos fp)))))
-    (declare (type double-float reasting a b f e-squared e-prime-squared long0 M mu
+    (declare (type number reasting a b f e-squared e-prime-squared long0 M mu
                    e1 j1 j2 j3 j4 fp c1 t1 r1 n1 D q1 q2 q3 q4 q5 q6 q7 lat lon))
     (values (rad2deg (realpart lat))
             (rad2deg (realpart lon)))))
 
 (defun deg-min-sec-to-decimal (degree minute second)
   "Convert degree, minute, second format to decimal.nn"
-  (declare (optimize (speed 3))
+  (declare 
            (type number degree minute second))
   (+ degree (/ minute 60.0d0) (/ second (* 60.0d0 60.0d0))))
 
 (defun decimal-to-deg-min-sec (decimal)
   "Convert degree, minute, second format to decimal."
-  (declare (optimize (speed 3))
+  (declare 
            (type number decimal))
   (multiple-value-bind (degrees min-secs) (truncate decimal)
     (declare (type fixnum degrees)
-             (type double-float min-secs))
+             (type number min-secs))
     (when (< degrees 0)
       (setf min-secs (- min-secs))
       (decf degrees))
     (multiple-value-bind (minutes secs) (truncate (* 60 min-secs))
       (declare (type fixnum minutes)
-               (type double-float secs))
+               (type number secs))
       (values degrees minutes (* secs 60.0d0)))))
