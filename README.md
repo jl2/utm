@@ -19,6 +19,15 @@ Here's a sample run showing all off essentially all of the functionality.
     
     39.264654456410966d0
     -105.39627074290249d0
+    * (utm:utm-to-lat-lon 422700.0 7605232.0 -53) #| negative zone for southern hemisphere |#
+
+    -21.654466375054866d0
+    134.25293203530634d0
+    * (utm:lat-lon-to-utm -21.654466375054866d0 134.25293203530634d0)
+
+    422700.00003077503d0
+    7605232.0000484595d0
+    -53
     * (utm:lat-lon-to-utm 39.264657358 -105.396267073 :ellipsoid "WGS72")
     
     465814.3743203891d0
