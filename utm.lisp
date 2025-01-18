@@ -222,7 +222,7 @@
       ((reasting (- easting 500000.0d0))
        (northing (if (< 0 zone)
                      northing
-                     (- northing 10000000.0d0)))
+                     (- northing N0)))
        (zone (abs zone))
        (a (car (gethash ellipsoid *ellipsoids*)))
        (b (cdr (gethash ellipsoid *ellipsoids*)))
