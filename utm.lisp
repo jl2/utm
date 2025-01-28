@@ -89,7 +89,7 @@
          (e-prime-squared (/ e-squared
                              (- 1.0d0 e-squared)))
          (nzone (if zone
-                    zone
+                    (abs zone)
                     (ceiling (/ (+ lon 180.0d0)
                                 6.0d0))))
 
@@ -205,7 +205,9 @@
             (if (< lat 0)
                 (+ N0 northing)
                 northing)
-            nzone)))
+            (if (< lat 0)
+                (- nzone)
+                nzone))))
 
 ;; Again, see the references for an explanation of what's going on
 ;; * http://www.uwgb.edu/dutchs/UsefulData/UTMFormulas.htm
@@ -218,6 +220,10 @@
            )
   (let*
       ((reasting (- easting 500000.0d0))
+       (northing (if (< 0 zone)
+                     northing
+                     (- northing N0)))
+       (zone (abs zone))
        (a (car (gethash ellipsoid *ellipsoids*)))
        (b (cdr (gethash ellipsoid *ellipsoids*)))
        (f (/ (- a b)

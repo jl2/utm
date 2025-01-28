@@ -73,7 +73,7 @@
                        :latitude -29.3438753994d0
                        :longitude 130.8032226563d0
                        :ellipsoid "GRS80"
-                       :zone 52
+                       :zone -52
                        :easting 675064.430d0
                        :northing 6752564.671d0)))
 
